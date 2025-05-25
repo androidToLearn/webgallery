@@ -1,18 +1,19 @@
 from flask import Flask, render_template, redirect, jsonify, request, send_from_directory, redirect, url_for, jsonify
 from dal.Sql_message import Sql_message
+from dal.Sql_user import User
+from dal.Sql_user import SqlUser
 from objects.Message import Message
 import uuid
 app = Flask(__name__)
 
-users = []
-messages = []
-
 
 @app.route('/', methods=['get'])
 def index():
+
     return render_template('page1.html')
 
 
+messages = []
 isWasInAdd_User = False
 
 
@@ -30,7 +31,7 @@ def add_user():
         name_user = request.form.get('name')
         password = request.form.get('password')
         if isNameNotAppear(name_user, password):
-            users.append({'user_name': name_user, 'password': password})
+            SqlUser().insertOne(User(name_user, password))
         elif not isExistsUser(name_user, password):
             return jsonify({'message': 'bad password'})
         contact = name_user
@@ -38,31 +39,30 @@ def add_user():
             file.write(name_user)
     with open('contact'+str(uuid.getnode())+'.txt', 'w', encoding='utf-8') as file:
         file.write(contact)
-    isWasInAdd_User = True
     return redirect(url_for('update_chat', name=name_user, contact=contact))
 
 
 def isNameNotAppear(name, password):
+    users = SqlUser().getAllUsers()
     for user in users:
-        if str(user['user_name']) == name:
+        if str(user.name) == name:
             return False
     return True
 
 
 def isExistsUser(name, password):
+    users = SqlUser().getAllUsers()
     for user in users:
-        if user['user_name'] == name and user['password'] == password:
+        if user.name == name and user.password == password:
             return True
     return False
 
 
 @app.route('/update_chat/<name>/<contact>', methods=['get'])
 def update_chat(name, contact):
-   # if isWasInAdd_User:
-    #    isWasInAdd_User = False
-    #    return render_template('page2.html', messages=getAllMessagesFromSql(contact, name), user_name=name, contact=contact, users=users)
+    messages = Sql_message().getAllMessages()
+    users = SqlUser().getAllUsers()
 
-    print('update_chat')
     currentName = None
     currentContact = None
     print('name:', name, 'contact: ' + contact)
@@ -90,14 +90,18 @@ def notReturn(messages):
 @app.route('/add_message/<name>/<contact>', methods=['post'])
 def add_message(name, contact):
     print('add_message')
+    global messages
+
     #    def __init__(self, message: str, sendTo: str, sendFrom: str, id: int, filename: str, isFrom_get: bool, isTo_get: bool):
     message = request.form.get('message')
     print(message)
     messages.append(Message(message, contact, name, -1, '', False, False))
+
     return redirect(url_for('update_chat', name=name, contact=contact))
 
 
 def addRlevantMessagesToSql(name):
+    global messages
     sql_message = Sql_message()
     print('------------------------------inserting: name', name,
           '------------------------------------------------')

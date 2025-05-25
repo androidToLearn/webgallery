@@ -71,18 +71,18 @@
             <div style="flex-grow: 1; height: 100vh; overflow-y: auto;overflow-y: auto;">
                 {%for user in users%}
 
-                {%if contact == user['user_name']%}
+                {%if contact == user.name%}
                 <div class="in_chat">
-                    <p style="color: black;">{{user['user_name']}}</p>
+                    <p style="color: black;">{{user.name}}</p>
                 </div>
                 {%else%}
-                {% if not user['user_name'] == user_name %}
+                {% if not user.name == user_name %}
                 <div class="other_chat">
-                    <p style="color: black;" class="b">{{user['user_name']}}</p>
+                    <p style="color: black;" class="b">{{user.name}}</p>
                 </div>
                 {% else %}
                 <div class="other_chat_me">
-                    <p style="color: black;" class="b">{{user['user_name']}}</p>
+                    <p style="color: black;" class="b">{{user.name}}</p>
                 </div>
                 {% endif %}
                 {%endif%}
