@@ -1,0 +1,65 @@
+.main_div {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+body {
+    overflow: hidden;
+}
+
+.in_chat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: green;
+    border: 2px solid black;
+}
+
+.other_chat_me {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 10px solid green;
+}
+
+.other_chat_me p {
+    color: green !important;
+}
+
+.other_chat_me:hover {
+
+    background-color: gray;
+
+}
+
+.other_chat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 2px solid black;
+}
+
+.other_chat:hover {
+    background-color: gray;
+}
+
+.send_div {
+    border: 2px solid gray;
+    background-color: white;
+    border-radius: 30px;
+    flex-grow: 3;
+    height: 100%;
+}
+
+.click_send {
+    height: 100%;
+    flex-grow: 1;
+    background-color: green;
+    border: 2px solid black;
+}
+
+.b {}
