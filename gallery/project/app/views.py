@@ -186,6 +186,7 @@ def sendEmailWithJsonToNextPage(request, isForget):
     return JsonResponse({'r': 'nothing'})
 
 
+
 @csrf_exempt
 def moveToChangePassword(request):
     # get email from savedUser...
@@ -196,12 +197,16 @@ def moveToChangePassword(request):
 
         # print('inside test code')
         print(jsonPassword['password'])
-        if int(jsonPassword['password']) == i:
-            print('good')
-            return JsonResponse({'r': 'good'})
-        else:
-            print('bad')
+        try:
+            if int(jsonPassword['password']) == i:
+                print('good')
+                return JsonResponse({'r': 'good'})
+            else:
+                print('bad')
+                return JsonResponse({'r': 'bad code'})
+        except Exception as e:
             return JsonResponse({'r': 'bad code'})
+
     return JsonResponse({'r': 'nothing'})
 
 
