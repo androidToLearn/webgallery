@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כניסה</title>
+
+    <style>
+        body {
+            margin: 0px;
+            background-color: aqua;
+
+        }
+
+        .b {
+            border: 2px solid blue;
+        }
+
+        .b:focus {
+            background-color: blue;
+        }
+
+        .green {
+            width: 150px;
+            height: fit-content;
+            font-size: 20px;
+            padding: 10px;
+            border-radius: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            background-color: blue;
+        }
+
+        .green:hover {
+            background-color: rgb(10, 10, 173)
+        }
+
+        .green:active {
+            background-color: rgb(8, 8, 105);
+        }
+
+        .forgetcolor {
+            color: blue;
+        }
+
+        .forgetcolor:hover {
+            color: rgb(7, 7, 169);
+        }
+
+        .forgetcolor:active {
+            color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+    {% load static %}
+
+    <div style="width: 100%;height: 100%; display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;">
+
+        <div style="width: 100%;height: 130px;background-color: blue;">
+
+        </div>
+
+        <div
+            style="width: 1300px;height: fit-content;display: flex;flex-direction: row;border: 1px solid black;border-radius: 30px;padding: 70px;background-color: white;margin: 40px;">
+
+            <div
+                style="border: 2px solid black;width: 0px;height: 300px;border-radius: 30px;display: flex;flex-direction: column;align-items: center;justify-content: center;flex-grow: 2;padding: 10px;">
+
+                <div style="width: 90px;height: 90px;background-color: red;display: flex;justify-content: center;align-items: center;border-radius: 100%;border: 1px solid black;margin-top: -100px;margin-bottom: 60px;"
+                    id="circle">
+                    <p id="text" style="font-size: 30px;">1</p>
+                </div>
+
+                <input type=" text" id="name" placeholder="name..."
+                    style="width: 500px;height: fit-content;font-size: 20px;color: black;margin: 5px;border-radius: 10px;padding: 10px;"
+                    class="b">
+
+
+                <input type="password" id="password" placeholder="password..."
+                    style="width: 500px;height: fit-content;font-size: 20px;color: black;margin: 5px;border-radius: 10px;padding: 10px;"
+                    class="b">
+                <div style="width: fit-content;height: fit-content;position: relative;top: -40px;left: 240px;"
+                    id="divShow">
+                    <img src="{% static 'images/visibility_off.png' %}" alt="showpassword" id="imgShow">
+                </div>
+
+
+
+                {% if not user == '' or user == '' %}
+                <a href="{% url 'to_change_password' 1 %}" style="margin-right: -400px;" class="forgetcolor">שכחתי
+                    סיסמה...</a>
+                {% endif %}
+                <div
+                    style="position: relative;width: 100%;height: fit-content;align-items: center;display: flex;margin-top: 40px;flex-direction: row;justify-content: start;">
+                    <input type="button" value="כניסה" id="enters"
+                        style="border: 1px solid black;position: absolute;z-index: 1;" class="green"
+                        onclick="clickEnter()">
+                    <img src="{% static 'images/g.png' %}" alt="image"
+                        style="width: 30px;height: auto;position: absolute;z-index: 2;left: 8px;" type="image/png">
+                </div>
+            </div>
+            <div
+                style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 0px;flex-grow: 2;">
+                <div
+                    style="width: fit-content;height: fit-content;margin-right: -300px;margin-top: -200px;display: flex;flex-direction: column;justify-content: center;align-items: end;">
+                    <img src="{% static 'images/profile1.png' %}" alt="b"
+                        style="width: 150px;height: auto;margin-top: 60px;margin-right: -40px;">
+                    <h1 style="max-lines: 1;width: 300px;text-align: end;">גלריית התמונות שלך</h1>
+                    <p style="width: 400px;text-align: end;">כאן תוכל להעלות תמונות וסירטונים מהמחשב או הטלפון ,תוכל גם
+                        להוריד את התמונות
+                        ,וגם לישלוח אותן לאחרים
+                        באתר</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        let myColor = getRandomColor();
+
+        function getRandomColor() {
+            const i = Math.floor(Math.random() * 6) + 1;
+            if (i === 1) {
+                return 'yellow';
+            } else if (i === 2) {
+                return 'slategrey';
+            } else if (i === 3) {
+                return 'red';
+            } else if (i === 4) {
+                return 'brown';
+            } else if (i === 5) {
+                return 'gainsboro';
+            } else if (i === 6) {
+                return 'darkblue';
+            }
+        }
+
+        function doShowPassword() {
+            let divShow = document.getElementById('divShow');
+            let imgShow = document.getElementById('imgShow');
+            let edit = document.getElementById('password');
+
+            divShow.addEventListener('mouseover', (event) => {
+                edit.type = 'text';
+                imgShow.src = "{% static 'images/visibility_on.png' %}";
+                console.log('inside');
+            });
+
+            divShow.addEventListener('mouseleave', (event) => {
+                edit.type = 'password';
+                imgShow.src = "{% static 'images/visibility_off.png' %}";
+            });
+        }
+        doShowPassword();
+
+        function clickEnter(event) {
+            let name = document.getElementById('name').value;
+            let password = document.getElementById('password').value;
+            let text = document.getElementById('text');
+            let circle = document.getElementById('circle');
+
+            if (name.trim().length > 0 && password.trim().length > 0) {
+                text.innerText = name[0];
+                circle.style.backgroundColor = myColor;
+                fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, password: password, color: myColor }) }).then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                    else {
+                        return response.json();
+                        //bad name -
+                    }
+                });
+            }
+            else {
+                alert('מלא את השדות...');
+            }
+        }
+        function doChangeCircle() {
+            let name = document.getElementById('name');
+            let text = document.getElementById('text');
+            let circle = document.getElementById('circle');
+            circle.style.display = 'none';
+
+            setInterval(() => {
+                if (name.value.trim().length > 0) {
+                    text.innerText = name.value[0];
+                    circle.style.backgroundColor = myColor;
+                    circle.style.display = 'flex';
+                }
+            }, 100);
+        }
+        doChangeCircle();
+    </script>
+    <script src="{% static 'scriptEnter1.js' %}"></script>
+</body>
+
+</html>
