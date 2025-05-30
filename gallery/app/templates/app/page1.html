@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load widget_tweaks %}
+{% load static %}
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}gallery{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/phone2.png'%}">
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        .boarder {
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: transparent;
+        }
+
+        .boarder:hover {
+            background-color: rgb(4, 32, 214);
+        }
+
+        .line {
+            background-color: black;
+            width: 100%;
+            height: 1px;
+        }
+
+        .z {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            width: 100%;
+            height: fit-content;
+            background-color: white;
+        }
+
+        .z:hover {
+            background-color: rgb(128, 128, 128);
+        }
+
+        .classImage {
+            width: 300px;
+            height: 300px;
+            background-color: aqua;
+        }
+
+        .clickAdd {
+            z-index: 6;
+            position: absolute;
+            color: black;
+            background-color: blue;
+            width: fit-content;
+            height: fit-content;
+            border-radius: 100%;
+            padding: 20px;
+            left: 1040px;
+            top: 220px;
+            border: 1px solid black;
+            font-size: 40px;
+        }
+
+        .clickAdd:hover {
+            background-color: BLUE;
+            border: 1px solid white;
+        }
+
+        .greenbutton {
+            background-color: yellowgreen;
+            border-radius: 20px;
+            border: 2px solid black;
+            padding: 40px;
+            font-size: 20px;
+            left: 1000px;
+            top: 350px;
+        }
+
+        .greenbutton:hover {
+            background-color: rgb(114, 152, 37);
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .not_hidden {
+            display: block;
+        }
+
+        .classColored p {
+            color: blue;
+        }
+
+        .z1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
+            width: 100%;
+            height: fit-content;
+            background-color: white;
+            position: relative;
+            z-index: 1000;
+
+        }
+
+        .z1:hover {
+            background-color: rgb(128, 128, 128);
+        }
+
+        .sharename {
+            outline: none;
+            border: 2px solid black;
+        }
+
+        .sharename:focus {
+            border: 2px solid blue;
+        }
+
+        .btnShareWithName {
+            padding: 20px;
+            border: 1px solid black;
+            background-color: blue;
+            border-radius: 5px;
+            width: 300px;
+            font-family: cursive;
+            font-size: 25px;
+        }
+
+        .btnShareWithName:hover {
+            width: 250px;
+            background-color: rgb(4, 32, 214);
+        }
+
+        .clickSystem {
+            background-color: white;
+        }
+
+        .clickSystem:hover {
+            color: blue;
+        }
+
+        .clickSystem:active {
+            background-color: aqua;
+            color: blue;
+        }
+
+        .hiddenscroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .hiddenscroll::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+    <div style="width: 100%;height: fit-content;display: flex;flex-direction: row;">
+        <div style="width: 0px;height: fit-content;display: flex;flex-direction: column;flex-grow: 3;" id="bodyDiv">
+
+            <div style="position: relative;width: 100%;height: 100vh;overflow: auto;" class="hiddenscroll">
+
+                <div
+                    style="display: flex;flex-direction: column;width: 100%;height: fit-content;position: absolute;z-index: 3;top: 130px;">
+                    {% if rows_not_json|length == 0 %}
+                    <p
+                        style="margin: 30px;text-shadow: -2px 2px 2px blue;color: black;font-family: cursive;font-size: 30px;">
+                        הגלרייה רייקה לחץ על התפריט כדי להוסיף פריטים
+                    </p>
+                    {% endif %}
+                    <div style="width: 100%;height: 700px; display: flex;flex-direction: column;" id="imagesdiv">
+                        {% for row in rows_not_json %}
+
+                        {% for image in row %}
+
+                        {% if forloop.counter == 1 and image.isNewDate%}
+                        <div style="width: fit-content;height: fit-content;margin: 10px;">
+                            {% if image.image.date == date%}
+
+                            <p
+                                style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;">
+                                היום</p>
+                            {% elif image.image.date == datey %}
+                            <p
+                                style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;{%if hasTodayImg %}margin-top: 100px;{% endif %}">
+                                אתמול </p>
+                            {% else %}
+                            <p
+                                style="font-family: cursive;width: fit-content;height: fit-content;font-size: 20px;margin: -5px;margin-left: 10px;{%if hasYesterdayImgOrToday %}margin-top: 100px;{% endif %}">
+                                {{image.image.sdate}}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {%endfor%}
+                        <div style="width: 100%;height: fit-content;display: flex;flex-direction: row;">
+                            {% for image in row %}
+                            <div style="position: relative;width: fit-content;height: fit-content;">
+                                <div style="position: absolute;width: fit-content;height:fit-content;margin: 10px;z-index: 3;left: calc(100% - 50px);"
+                                    id="divimage1">
+                                    <div style="position: relative;width: fit-content;height: fit-content;">
+                                        <img src="{% static 'images/menu31.png' %}"
+                                            style="position: relative;width: 30px;height:auto;z-index: 200;"
+                                            name="image_menu" data-default-src="{% static 'images/menu31.png' %}"
+                                            data-hover-src="{% static 'images/gray_menu.png' %}" onclick="click_menu()">
+
+                                    </div>
+                                </div>
+                                <div style="width: fit-content;height: fit-content;z-index: 1;position: relative;">
+                                    {% if not image.isVideo %}
+                                    <img src="{{ image.image.image_url }}" alt="image"
+                                        style="width: 100px; height: auto; margin: 10PX;position: relative;"
+                                        onclick="clickImage('{{image.image.image_url }}')">
+                                    {% else %}
+                                    <video width="200" style="margin: 10px;position: relative;"
+                                        onclick="clickVideo('{{image.image.image_url}}' , '{{image.type}}')" controls>
+                                        <source src="{{ image.image.image_url }}" type="video/{{image.type}}">
+                                        הדפדפן שלך לא תומך בווידאו
+                                    </video> {% endif %}
+                                </div>
+
+                                <div style="width: 100px;height: 200px;display: flex;flex-direction: column;z-index: 300;position: absolute;top: 50px;right: -70px;"
+                                    name="namemenu">
+                                    <div id="menu1">
+                                        <div style="border-top-left-radius: 30px; border-top-right-radius: 30px;"
+                                            class="z1">
+                                            <p>שיתוף
+                                            </p>
+                                        </div>
+                                        <div class="z1" style="display: none;">
+                                            <p>הורדה
+                                            </p>
+                                        </div>
+
+
+
+                                        {% if not image.isVideo %}
+                                        <div class="z1" onclick="clickImage('{{image.image.image_url }}')">
+                                            <p>מבט
+                                            </p>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="z1">
+                                            <p>הוספה למועדפים
+                                            </p>
+                                        </div>
+                                        <div class="z1"
+                                            style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;display: flex;justify-content: center;align-items: center;">
+                                            <p>מחיקה
+                                            </p>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <div style="position: absolute;width: 15vw;height: fit-content;background-color: white;left: 82vw;margin-top: 94px;margin: 30p;border-radius: 30px;display: flex;flex-direction: column;z-index: 100000;"
+                id="menu">
+                <div style="border-top-left-radius: 30px; border-top-right-radius: 30px;" class="z">
+                    <p>מהחודש האחרון
+                    </p>
+                </div>
+                <div class="z">
+                    <p>מועדפים
+                    </p>
+                </div>
+
+                <div class="z">
+                    <p>שותף איתי
+                    </p>
+                </div>
+
+                <div class="z">
+                    <p>הכל
+                    </p>
+                </div>
+
+                <div style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;display: flex;justify-content: center;align-items: center;"
+                    class="z">
+                    <p>להעלות
+                        תמונה או וידיאו
+                    </p>
+                </div>
+
+            </div>
+
+            <div
+                style="background-color: blue;width: 100%; height: 130px; display: flex;flex-direction: row;align-items: center;z-index: 2;position: absolute;z-index: 500;">
+                <img src="{% static 'images/profile1.png' %}" alt="profile" style="width: auto; height: 130px;">
+                <div
+                    style="width: fit-content;height: 100%;display: flex;flex-direction: column;justify-content: center;align-items: center;margin-top: 20px;">
+                    <div
+                        style="width: 60px;height: 60px;background-color:{{color}};border-radius: 100%;display: flex;align-items: center;justify-content: center;">
+                        <p style="color: white;text-shadow: 2px 2px 2px black;">{{user}}</p>
+                    </div>
+                    <p style="text-shadow: -2px -2px 2px gray;font-size: 15px;text-align: center;">welcome {{usern}}
+                    </p>
+                </div>
+                <a href="{% url 'to_change_password' 0 %}" style="text-decoration: none;color: black;">
+                    <div style="width: 300px;height: fit-content;border: 2px solid black;border-radius: 5px;margin: 10px;display: flex;justify-content: center;align-items: center;"
+                        class="clickSystem">
+                        <p>אימות משתמש</p>
+                    </div>
+                </a>
+                <!--0 כדי שלא יבדוק אם gmail קיים או לא ויצא במקרה שלא-->
+                <a href="{% url 'loginPageNew' %}" style="text-decoration: none;color: black;">
+                    <div style="width: 300px;height: fit-content;border: 2px solid black;border-radius: 5px;margin: 10px;display: flex;justify-content: center;align-items: center;"
+                        class="clickSystem">
+                        <p> כניסה ממשתמש אחר חדש או קיים</p>
+                    </div>
+                </a>
+
+                <P style="margin-left: 20vw;width: 60px;height: fit-content;text-shadow: -2px 2px 2px gray;color: black;font-family: cursive;font-size: 20px;"
+                    id="p">
+                </P>
+
+                <div
+                    style="border: 1px solid black; border-radius: 10px; width: fit-content; height: fit-content;
+         margin-left: 5vw; margin-top: -14px;padding: 4px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                    <a href="https://www.facebook.com/profile.php?id=61559660862616"><img
+                            src="{% static 'images/facebook.webp' %}" alt="facebook image"
+                            style="width: 30px;height: 30px;"></a>
+                    <a href="https://youtube.com/@sportandprogramming?si=UY9weQzHnGpi-4Ra"> <img
+                            src="{% static 'images/youtube.png' %}" alt="youtube image"
+                            style="width: 50px;height: 30px;"></a>
+
+                </div>
+
+                <img src="{% static 'images/menu.svg' %}"
+                    style="width: 40px;height: 40px;margin-left: 2vw;padding: 5px;z-index: 6000;" class="boarder"
+                    id="btnmenu">
+            </div>
+
+            <div style="width: 100%;height: 100%;display: flex;z-index: 2000;position: absolute;justify-content: center;align-items: center;z-index: 10000;"
+                id="divAdd">
+
+                <div style="width: 800px;height: 300px;background-color: white;border: 2px solid black;border-radius: 30px;display: flex;flex-direction: column;justify-content: center;
+        align-items: center;">
+                    <input type="button" value="close"
+                        style="background-color: red;margin-top: -50px;margin-right: -700px;margin-bottom: 50px;font-family: cursive;width: fit-content;height: fit-content;"
+                        onclick="close1234()">
+                    <input type="text" name="share"
+                        style="width: 600px;height: fit-content;border-radius: 10px;font-size: 30px;margin: 10px;"
+                        placeholder="name to share..." class="sharename">
+                    <input type="submit" onclick="classClickSend()" style="height: fit-content;" value="share"
+                        class="btnShareWithName">
+                </div>
+            </div>
+
+
+            <div style="position: absolute;top: 130px;width: 100%;height: 100%;z-index: 5;background-color: transparent;z-index: 10000;"
+                class="hidden" id="divForm">
+
+                <div
+                    style="justify-content: center;align-items: center;padding-left: 20vh;background-color: transparent;padding-right: 20vh;display: flex;">
+                    <form action="{% url 'index1'%}" method='POST' enctype="multipart/form-data"
+                        style="border: 2px solid black; border-radius: 30px;width: 40vw;height: 30vw; background-color: white;margin-top: -30px;overflow-y: auto;">
+                        {% csrf_token %}
+
+                        <div style="width: 100%;height: fit-content;display: flex;justify-content: center;align-items: center;flex-direction: column;"
+                            id="mediaInput">
+
+                        </div>
+                        <!--להוסיף כאן את תוכן ההעלאה-->
+
+                        <input type="file" name="images" id="{{form.image.id_for_label}}" style="display: none;"
+                            multiple>
+                        <label for="{{ form.image.id_for_label }}" style="width: 30px;height: 30px;text-align: center;">
+                            <p style="width: 30px;height: 30px;text-align: center;display: flex;justify-content: center;align-items: center;"
+                                class="clickAdd">+</p>
+                        </label>
+                        <div style="width: 100%;height: 100%;overflow: auto;padding: 30px;"></div>
+                        <input type="button" value="סיום" style="position: absolute;" class="greenbutton"
+                            id="greenbutton">
+                    </form>
+                </div>
+            </div>
+
+
+            <div style="width: 100%;height: 400px;background-color: black;">
+
+            </div>
+            <div id="load"
+                style="width: 100vw;height: 100vh;background-color: black;z-index: 80000;position: absolute;display: flex;justify-content: center;align-items: center;display: none;">
+                <p style="color: green;font-size: 40px;">טוען ... המתן כמה רגעים...</p>
+                <div
+                    style="position: relative;display: flex;justify-content: center;align-self: center;width: 400px;height: 400px;flex-direction: row;">
+                    <div style="width: 300px;height: 300px;background: conic-gradient(black , blue calc(var(--progress) * 1%));border-radius: 100%;position: absolute; --progress : 0;position: absolute;top: -25px;"
+                        id="progress">
+
+                    </div>
+                    <div style="position: relative;width: 250px;height: 250px;background-color: black;border-radius: 100%;
+                        ">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 0px;height: calc(100vh + 400px);flex-grow: 2;background-color: black;z-index: 400;display: none;flex-direction: column;justify-content: center;align-items: center;"
+            id="divid">
+            <video width="400" id="videoid" controls>
+                <source src="" id="sourceid">
+            </video>
+            <a href="{% static 'images/404.png' %}"><img src="{% static 'images/404.png' %}"
+                    style="width: 300px;height: auto;max-height: 100vh;" id="imageid"></a>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+
+
+    <script>
+
+        window.rows1 = {{ rows | safe }};
+        window.isOnlyClicked = false;
+        window.datey1 = {{ datey | safe }};
+        window.date1 = {{ date | safe }};
+        window.isHaveIdentify = {{ isHaveIdentify | safe }}
+        window.classColored = 'classColored';
+        window.hasTodayImg = {{ hasTodayImg1 | safe }}
+        window.hasYesterdayImgOrToday = {{ hasYesterdayImgOrToday1 | safe }};
+
+    </script>
+
+
+    <script>
+        console.log('isHaveIdentifyGmail' + window.isHaveIdentify)
+        if (window.isHaveIdentify) {
+            let string = 'יש לאמת את ה'
+            string += 'gmail';
+            setTimeout(() => {
+                alert(string)
+            }, 1000);
+        }
+
+        let progress = document.getElementById('progress');
+        let i = 5;
+        let angle = 0;
+        let isDawn = false;
+        setInterval(() => {
+            progress.style.setProperty('--progress', (i))
+
+            if (isDawn) {
+                angle -= 1;
+                i--;
+                if (angle <= 0) {
+                    isDawn = false;
+                }
+            }
+            else {
+                angle++;
+                i++;
+                if (angle === 270) {
+                    isDawn = true;
+                }
+            }
+            progress.style.transform = `rotate(${angle}deg)`
+
+
+
+        }, 30);
+
+
+        let image_menu = document.getElementsByName('image_menu');
+        let namemenu = document.getElementsByName('namemenu');
+
+        restartAll1();
+        for (let i = 0; i < image_menu.length; i++) {
+            image_menu[i].addEventListener('mouseover', (event) => {
+                image_menu[i].src = image_menu[i].dataset.hoverSrc;
+
+            });
+
+            image_menu[i].addEventListener('mouseout', (event) => {
+                image_menu[i].src = image_menu[i].dataset.defaultSrc;
+            });
+            image_menu[i].addEventListener('click', (event) => {
+                if (namemenu[i].style.display === 'none') {
+                    restartAll1();
+                    namemenu[i].style.display = 'flex';
+                }
+                else {
+                    namemenu[i].style.display = 'none';
+                }
+            });
+        }
+
+        function restartAll1() {
+            for (let i = 0; i < namemenu.length; i++) {
+                namemenu[i].style.display = 'none';
+            }
+        }
+
+
+        let rows1 = window.rows1;
+        let i_add = 0;
+        let b_add = 0;
+        window.click2 = initClicks2();
+
+
+        let classColored = window.classColored;
+        function restartColor1() {
+            let divs = document.getElementsByClassName('z1');
+            for (let i = 0; i < divs.length; i++) {
+                if (divs[i].classList.contains(classColored)) {
+                    divs[i].classList.remove(classColored);
+                }
+            }
+        }
+
+
+        let array = [];
+        for (let i = 0; i < window.rows1.length; i++) {
+            let row = window.rows1[i];
+            for (let j = 0; j < row.length; j++) {
+                if (row[j]['type']) {
+                    array.push(4);
+                }
+                else {
+                    array.push(5);
+                }
+            }
+
+        }
+        function initClicks2() {
+            let divAddName = document.getElementById('divAdd');
+            divAddName.style.display = 'none';
+
+
+            let divs = document.getElementsByClassName('z1');
+            for (let i = 0; i < divs.length; i++) {
+
+                divs[i].addEventListener('click', (event) => {
+
+
+
+
+
+                    restartColor1();
+                    divs[i].classList.add(classColored);
+                    i_add = i;
+                    b_add = i_add;
+                    let indexes = getFunctionClicked(i_add);
+                    console.log(indexes);
+
+                    if (array[indexes['in_array']] == 5) {
+
+                        console.log('inside image')
+
+                        //תמונה
+
+
+                        if (indexes['position_action'] == 0) {
+                            let divAddName = document.getElementById('divAdd');
+                            divAddName.style.display = 'flex';
+
+                        }
+                        else if (indexes['position_action'] == 1) {
+                            let image = getImageByIndex(window.rows1, indexes['in_array']);
+                            //download
+
+                            fetch('/download/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 'url': image['image_name'] }) }).then(response => response.blob())
+                                .then(blob => {
+                                    if (getTypeByIndex(window.rows1, indexes['in_array'])) {
+                                        console.log('download video');
+                                        const link = document.createElement('a');
+                                        link.href = window.URL.createObjectURL(blob);
+                                        link.download = "video.mp4";
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        link.remove();
+                                    }
+                                    else {
+                                        const link = document.createElement('a');
+                                        link.href = window.URL.createObjectURL(blob);
+                                        link.download = "image.jpg";
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        link.remove();
+                                    }
+                                });
+
+
+                        }
+                        else if (indexes['position_action'] == 2) {
+                            //view
+                        }
+                        else if (indexes['position_action'] == 3) {
+                            let image = getImageByIndex(window.rows1, indexes['in_array'])
+                            fetch('/to_favorite/', {
+                                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 'name': image['image_name'], 'owner': image['owner'] })
+                            }).then(response => response.json()).then(data => {
+                                window.location.reload();
+
+                            });
+                        }
+                        else if (indexes['position_action'] == 4) {
+                            //delete
+                            let image = getImageByIndex(window.rows1, indexes['in_array'])
+                            fetch('/to_delete/', {
+                                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 'name': image['image_name'], 'owner': image['owner'] })
+                            }).then(response => response.json()).then(data => {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                    else if (array[indexes['in_array']] == 4) {
+                        //וידיאו
+                        console.log('inside video')
+
+
+                        if (indexes['position_action'] == 0) {
+                            let divAddName = document.getElementById('divAdd');
+                            divAddName.style.display = 'flex';
+
+                        }
+                        else if (indexes['position_action'] == 1) {
+                            let image = getImageByIndex(window.rows1, indexes['in_array'])
+                            //download
+                            fetch('/download/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 'url': image['image_url'] }) }).then(response => response.blob())
+                                .then(blob => {
+                                    const link = document.createElement('a');
+                                    link.href = window.URL.createObjectURL(blob);
+                                    link.download = "icon23.jpg";
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    link.remove();
+                                });
+
+
+                        }
+                        else if (indexes['position_action'] == 2) {
+                            let image = getImageByIndex(window.rows1, indexes['in_array'])
+                            fetch('/to_favorite/', {
+                                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 'name': image['image_name'], 'owner': image['owner'] })
+                            }).then(response => response.json()).then(data => {
+                                window.location.reload();
+
+                            });
+                        }
+                        else if (indexes['position_action'] == 3) {
+                            console.log('delete')
+
+                            //delete
+                            let image = getImageByIndex(window.rows1, indexes['in_array'])
+                            fetch('/to_delete/', {
+                                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 'name': image['image_name'], 'owner': image['owner'] })
+                            }).then(response => response.json()).then(data => {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        function classClickSend() {
+            console.log('inside class click send')
+            let image = getImageByIndex(window.rows1, getFunctionClicked(b_add)['in_array'])
+            let divAddName = document.getElementById('divAdd');
+            let name = document.getElementsByName('share')[0].value;
+            doShare(image, name);
+            divAddName.style.display = 'none';
+        }
+
+        function close1234() {
+            let divAddName = document.getElementById('divAdd');
+            divAddName.style.display = 'none';
+        }
+
+
+        function doShare(image, name) {
+            fetch('/share_image/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 'image': image['image_name'], 'name': name.trim(), 'owner': image['owner'] }) }).then(response => response.json()).then(data => {
+                if (data['r'] === 'bad') {
+                    alert('שם לא תקין')
+                }
+                else {
+                    alert('שותף עם ' + data['r'])
+                }
+            });
+        }
+
+        function getImageByIndex(images, index) {
+            return images[parseInt(index / 5)][index % 5]['image'];
+        }
+        function getTypeByIndex(images, index) {
+            return images[parseInt(index / 5)][index % 5]['type'];
+        }
+
+        function getFunctionClicked(index) {
+            let sum = 0;
+            let index1 = 0;
+
+            //-1 לsum כי הספירה מתחילה מ0
+            while ((sum - 1 + array[index1]) < index) {
+                sum += array[index1];
+
+                index1++;
+            }
+
+            if (index1 > 0) {
+                index -= sum;
+            }
+
+            return { 'in_array': index1, 'position_action': index }
+
+        }
+
+
+
+
+
+    </script>
+    <script>
+
+
+        function clickImage(src) {
+            let image = document.getElementById('imageid');
+            let source = document.getElementById('sourceid');
+            let video = document.getElementById('videoid');
+            let div = document.getElementById('divid');
+            video.style.display = 'none';
+            image.style.display = 'block';
+            if (div.style.display == 'none') {
+                div.style.display = 'flex';
+            }
+            else {
+                div.style.display = 'none';
+            }
+            image.src = src
+        }
+
+
+        function clickVideo(src, type) {
+            let image = document.getElementById('imageid');
+            let source = document.getElementById('sourceid');
+            let video = document.getElementById('videoid');
+            let div = document.getElementById('divid');
+            video.style.display = 'block';
+            image.style.display = 'none';
+            if (div.style.display == 'none') {
+                div.style.display = 'flex';
+            }
+            else {
+                div.style.display = 'none';
+            }
+            source.src = src
+            source.type = type;
+        }
+
+        function click_menu() {
+            window.isOnlyClicked = true;
+        }
+        initMenu();
+        function initMenu() {
+            let menu = document.getElementById('menu');
+            menu.style.display = 'none';
+
+            document.getElementById('btnmenu').addEventListener('click', () => {
+
+                if (menu.style.display === 'none') {
+                    window.isOnlyClicked = true;
+
+                    menu.style.display = 'block';
+                }
+                else {
+
+                    menu.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('bodyDiv').addEventListener('click', (event) => {
+
+            setTimeout(() => {
+                if (!window.isOnlyClicked) {
+                    let menu = document.getElementById('menu');
+                    menu.style.display = 'none';
+                    let divsMenu = document.getElementsByName('namemenu');
+                    for (let i = 0; i < divsMenu.length; i++) {
+                        divsMenu[i].style.display = 'none';
+                    }
+                }
+                else {
+                    setTimeout(() => {
+                        window.isOnlyClicked = false;
+                    }, 50);
+                }
+            }, 0);
+
+
+        });
+
+
+        let files = [];
+        document.getElementsByName('images')[0].addEventListener('change', function (event) {
+
+            const container = document.getElementById('mediaInput');
+            let input = document.getElementsByName('images')[0];
+            files.push(event.target.files[0]);
+
+            for (let i = files.length - 1; i < files.length; i++) {
+
+                const url = URL.createObjectURL(files[i]);
+
+                let element;
+
+
+
+                if (files[i].type.startsWith('image/')) {
+                    element = document.createElement('img');
+                    element.src = url;
+                    element.style.maxWidth = '300px';
+                    element.style.margin = '10px';
+
+
+                } else if (files[i].type.startsWith('video/')) {
+                    element = document.createElement('video');
+                    element.src = url;
+                    element.controls = true;
+                    element.style.maxWidth = '300px';
+                    element.style.margin = '10px';
+                } else {
+                    return; // לא תמונה ולא וידאו – לא מציג
+                }
+
+                container.appendChild(element);
+            }
+        });
+
+        document.getElementById('greenbutton').addEventListener('click', (event) => {
+            let url = "{% url 'index1' %}";
+            const formData = new FormData();
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);  // שם השדה חייב להתאים ל־name של ה־input או לשדה ב־Django
+            }
+
+            let load = document.getElementById('load');
+            load.style.display = 'flex';
+            fetch(url, { method: 'POST', body: formData }).then(response => { response.json() }).then(data => {
+                window.location.reload();
+            }).then(response => { response.json() }).then(data => {
+                let load = document.getElementById('load');
+                load.style.display = 'none';
+            });
+        });
+
+
+
+
+        initClicks();
+
+
+        function restartColor() {
+            let divImages = document.getElementById('imagesdiv');
+            let divs = document.getElementsByClassName('z');
+            for (let i = 0; i < divs.length; i++) {
+                if (divs[i].classList.contains(window.classColored)) {
+                    divs[i].classList.remove(window.classColored);
+                }
+            }
+        }
+
+        function hiddenAdd() {
+            let divForm = document.getElementById('divForm');
+
+            if (divForm.classList.contains('not_hidden')) {
+                divForm.classList.replace('not_hidden', 'hidden');
+            }
+        }
+        function initClicks() {
+            let divImages = document.getElementById('imagesdiv');
+            let divs = document.getElementsByClassName('z');
+            let p = document.getElementById('p');
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].addEventListener('click', () => {
+                    restartColor();
+                    divs[i].classList.add(window.classColored);
+
+
+                    if (i === 0) {
+                        p.innerText = 'נוספו לאחרונה';
+                        printLasts();
+                        hiddenAdd();
+
+
+                    }
+                    else if (i === 1) {
+                        //מועדפים
+                        p.innerText = 'מועדפים';
+                        printFavorites();
+                        hiddenAdd();
+                    }
+                    else if (i === 2) {
+                        p.innerText = 'שותף איתי';
+                        //שותף איתי
+                        printSharedWithMe();
+                        hiddenAdd();
+                    }
+                    else if (i === 3) {
+                        //>הכל
+                        p.innerText = 'הכל';
+                        printAll();
+                        hiddenAdd();
+                    }
+                    else if (i === 4) {
+                        p.innerText = 'העלאת פריטים';
+                        //העלות תמונה
+                        let divForm = document.getElementById('divForm');
+                        if (divForm.classList.contains('hidden')) {
+                            divForm.classList.replace('hidden', 'not_hidden');
+                        }
+                        else {
+                            divForm.classList.replace('not_hidden', 'hidden');
+                            restartColor();
+
+                        }
+
+                    }
+
+                });
+            }
+        }
+
+
+
+
+        function printAll() {
+
+            let html = '';
+            let date1 = window.date1
+            let datey1 = window.datey1
+
+            for (let i = 0; i < window.rows1.length; i++) {
+
+
+                let row = window.rows1[i];
+                for (let i = 0; i < row.length; i++) {
+                    image = row[i];
+
+
+                    if (image['isNewDate']) {
+                        isAddDate = false;
+                    }
+
+
+                    if (!isAddDate) {
+                        isAddDate = true;
+                        html += '<div style="width: fit-content;height: fit-content;margin: 10px;">';
+                        if (image.image.date == date1) {
+
+                            html += `<p style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;">היום</p>`;
+
+                        }
+                        else if (image.image.date == datey1) {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;`
+                            if (hasTodayImg) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">
+                    אתמול</p>`;
+                        }
+                        else {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 20px;margin: -5px;margin-left: 10px;`;
+                            if (hasYesterdayImgOrToday) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">` +
+                                image.image.sdate
+                                + `</p>`;
+                        }
+
+                        html += '  </div >';
+                    }
+                }
+
+
+                html += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: row;">`;
+                for (let j = 0; j < row.length; j++) {
+                    let item = row[j];
+                    let imageUrl = item.image.image_url;
+                    let imageName = item.image.image_name;
+                    let type = item.type;
+                    let isVideo = item.isVideo;
+
+                    html += `
+                <div style="position: relative; margin: 10px;">
+                    <div style="position: absolute; right: 0; top: 0; z-index: 3;">
+                        <img src="/static/images/menu31.png"
+                             style="position: relative; width: 30px; height: auto; z-index: 200;"
+             name="image_menu"
+             data-default-src="/static/images/menu31.png"
+             data-hover-src="/static/images/gray_menu.png"
+             onclick="click_menu()"
+             onmouseover="this.src=this.getAttribute('data-hover-src')"
+             onmouseout="this.src=this.getAttribute('data-default-src')" />
+                    </div>
+                    <div style="position: relative; z-index: 1;">`;
+
+                    if (!isVideo) {
+                        html += `
+                        <img src="${imageUrl}" alt="image"
+                             style="width: 100px; height: auto; margin: 10px;"
+                             onclick="clickImage('${imageUrl}')">`;
+                    } else {
+                        html += `
+                        <video width="200" style="margin: 10px;" controls
+                               onclick="clickVideo('${imageUrl}', '${type}')">
+                            <source src="${imageUrl}" type="video/${type}">
+                            הדפדפן שלך לא תומך בווידאו
+                        </video>`;
+                    }
+
+                    html += `
+                    </div>
+                    <div style="width: 100px; height: 200px; display: flex; flex-direction: column; position: absolute; top: 50px; right: -70px; z-index: 300;" name="namemenu">
+                        <div id="menu1">
+                            <div class="z1" style="border-top-left-radius: 30px; border-top-right-radius: 30px;"><p>שיתוף</p></div>
+                            <div class="z1" style="display: none;"><p>הורדה</p></div>
+${!isVideo ? `<div class="z1" onclick="clickImage('${imageUrl}')"><p>מבט</p></div>` : ''}
+                            <div class="z1"><p>הוספה למועדפים</p></div>
+                            <div class="z1" style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; display: flex; justify-content: center; align-items: center;"><p>מחיקה</p></div>
+                        </div>
+                    </div>
+                </div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            document.getElementById('imagesdiv').innerHTML = html;
+            initClicks2();
+            let image_menu = document.getElementsByName('image_menu');
+            let namemenu = document.getElementsByName('namemenu');
+            restartAll1();
+            for (let i = 0; i < image_menu.length; i++) {
+                image_menu[i].addEventListener('mouseover', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.hoverSrc;
+
+                });
+
+                image_menu[i].addEventListener('mouseout', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.defaultSrc;
+                });
+                image_menu[i].addEventListener('click', (event) => {
+                    if (namemenu[i].style.display === 'none') {
+                        restartAll1();
+                        namemenu[i].style.display = 'flex';
+                    }
+                    else {
+                        namemenu[i].style.display = 'none';
+                    }
+                });
+            }
+
+        }
+
+
+
+
+
+        function printSharedWithMe() {
+
+            let html = '';
+            let date1 = window.date1
+            let datey1 = window.datey1
+
+            for (let i = 0; i < window.rows1.length; i++) {
+
+
+                let row = window.rows1[i];
+                for (let i = 0; i < row.length; i++) {
+                    image = row[i];
+
+
+                    if (image['isNewDate']) {
+                        isAddDate = false;
+                    }
+
+
+                    if (!isAddDate && image['isShared']) {
+                        isAddDate = true;
+                        html += '<div style="width: fit-content;height: fit-content;margin: 10px;">';
+                        if (image.image.date == date1) {
+
+                            html += `<p style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;">היום</p>`;
+
+                        }
+                        else if (image.image.date == datey1) {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;`
+                            if (hasTodayImg) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">
+                    אתמול</p>`;
+                        }
+                        else {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 20px;margin: -5px;margin-left: 10px;`;
+                            if (hasYesterdayImgOrToday) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">` +
+                                image.image.sdate
+                                + `</p>`;
+                        }
+
+                        html += '  </div >';
+                    }
+                }
+
+
+                html += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: row;">`;
+                for (let j = 0; j < row.length; j++) {
+                    let isShared = row[j]['isShared']
+                    let item = row[j];
+                    let imageUrl = item.image.image_url;
+                    let imageName = item.image.image_name;
+                    let type = item.type;
+                    let isVideo = item.isVideo;
+                    if (!isShared) {
+                        continue;
+                    }
+                    else {
+                    }
+
+                    html += `
+    <div style="position: relative; margin: 10px;">
+        <div style="position: absolute; right: 0; top: 0; z-index: 3;">
+            <img src="/static/images/menu31.png"
+                 style="position: relative; width: 30px; height: auto; z-index: 200;"
+ name="image_menu"
+ data-default-src="/static/images/menu31.png"
+ data-hover-src="/static/images/gray_menu.png"
+ onclick="click_menu()"
+ onmouseover="this.src=this.getAttribute('data-hover-src')"
+ onmouseout="this.src=this.getAttribute('data-default-src')" />
+        </div>
+        <div style="position: relative; z-index: 1;">`;
+
+                    if (!isVideo) {
+                        html += `
+            <img src="${imageUrl}" alt="image"
+                 style="width: 100px; height: auto; margin: 10px;"
+                 onclick="clickImage('${imageUrl}')">`;
+                    } else {
+                        html += `
+            <video width="200" style="margin: 10px;" controls
+                   onclick="clickVideo('${imageUrl}', '${type}')">
+                <source src="${imageUrl}" type="video/${type}">
+                הדפדפן שלך לא תומך בווידאו
+            </video>`;
+                    }
+
+                    html += `
+        </div>
+        <div style="width: 100px; height: 200px; display: flex; flex-direction: column; position: absolute; top: 50px; right: -70px; z-index: 300;" name="namemenu">
+            <div id="menu1">
+                <div class="z1" style="border-top-left-radius: 30px; border-top-right-radius: 30px;"><p>שיתוף</p></div>
+                <div class="z1" style="display: none;"><p>הורדה</p></div>
+${!isVideo ? `<div class="z1" onclick="clickImage('${imageUrl}')"><p>מבט</p></div>` : ''}
+                <div class="z1"><p>הוספה למועדפים</p></div>
+                <div class="z1" style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; display: flex; justify-content: center; align-items: center;"><p>מחיקה</p></div>
+            </div>
+        </div>
+    </div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            document.getElementById('imagesdiv').innerHTML = html;
+            initClicks2();
+            let image_menu = document.getElementsByName('image_menu');
+            let namemenu = document.getElementsByName('namemenu');
+            restartAll1();
+            for (let i = 0; i < image_menu.length; i++) {
+                image_menu[i].addEventListener('mouseover', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.hoverSrc;
+
+                });
+
+                image_menu[i].addEventListener('mouseout', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.defaultSrc;
+                });
+                image_menu[i].addEventListener('click', (event) => {
+                    if (namemenu[i].style.display === 'none') {
+                        restartAll1();
+                        namemenu[i].style.display = 'flex';
+                    }
+                    else {
+                        namemenu[i].style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        let currentTime = String({{ date }});
+        function isLast(time) {
+            let timeMonth = time[2] + time[3];
+            let myTime = currentTime[2] + currentTime[3];
+            if (timeMonth === myTime) {
+                return true;
+            }
+            return false;
+        }
+
+        function printLasts() {
+
+            let html = '';
+            let date1 = window.date1
+            let datey1 = window.datey1
+
+            for (let i = 0; i < window.rows1.length; i++) {
+
+
+                let row = window.rows1[i];
+                for (let i = 0; i < row.length; i++) {
+                    image = row[i];
+
+
+                    if (image['isNewDate']) {
+                        isAddDate = false;
+                    }
+
+
+                    if (!isAddDate && (isLast(image['image']['date']) || (image['image']['isShared'] && isLast(time_shared)))) {
+                        isAddDate = true;
+                        html += '<div style="width: fit-content;height: fit-content;margin: 10px;">';
+                        if (image.image.date == date1) {
+
+                            html += `<p style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;">היום</p>`;
+
+                        }
+                        else if (image.image.date == datey1) {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;`
+                            if (hasTodayImg) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">
+                    אתמול</p>`;
+                        }
+                        else {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 20px;margin: -5px;margin-left: 10px;`;
+                            if (hasYesterdayImgOrToday) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">` +
+                                image.image.sdate
+                                + `</p>`;
+                        }
+                        html += '  </div >';
+                    }
+                }
+
+
+                html += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: row;">`;
+
+                for (let j = 0; j < row.length; j++) {
+                    let isShared = row[j]['isShared']
+                    let item = row[j];
+                    let imageUrl = item.image.image_url;
+                    let imageName = item.image.image_name;
+                    let type = item.type;
+                    let isVideo = item.isVideo;
+                    if (!(isLast(image['image']['date']) || (image['image']['isShared'] && isLast(time_shared)))) {
+                        continue;
+                    }
+
+                    html += `
+<div style="position: relative; margin: 10px;">
+<div style="position: absolute; right: 0; top: 0; z-index: 3;">
+<img src="/static/images/menu31.png"
+style="position: relative; width: 30px; height: auto; z-index: 200;"
+name="image_menu"
+data-default-src="/static/images/menu31.png"
+data-hover-src="/static/images/gray_menu.png"
+onclick="click_menu()"
+onmouseover="this.src=this.getAttribute('data-hover-src')"
+onmouseout="this.src=this.getAttribute('data-default-src')" />
+</div>
+<div style="position: relative; z-index: 1;">`;
+
+                    if (!isVideo) {
+                        html += `
+<img src="${imageUrl}" alt="image"
+style="width: 100px; height: auto; margin: 10px;"
+onclick="clickImage('${imageUrl}')">`;
+                    } else {
+                        html += `
+<video width="200" style="margin: 10px;" controls
+onclick="clickVideo('${imageUrl}', '${type}')">
+<source src="${imageUrl}" type="video/${type}">
+הדפדפן שלך לא תומך בווידאו
+</video>`;
+                    }
+
+                    html += `
+</div>
+<div style="width: 100px; height: 200px; display: flex; flex-direction: column; position: absolute; top: 50px; right: -70px; z-index: 300;" name="namemenu">
+<div id="menu1">
+<div class="z1" style="border-top-left-radius: 30px; border-top-right-radius: 30px;"><p>שיתוף</p></div>
+<div class="z1" style="display: none;"><p>הורדה</p></div>
+${!isVideo ? `<div class="z1" onclick="clickImage('${imageUrl}')"><p>מבט</p></div>` : ''}
+<div class="z1"><p>הוספה למועדפים</p></div>
+<div class="z1" style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; display: flex; justify-content: center; align-items: center;"><p>מחיקה</p></div>
+</div>
+</div>
+</div>`;
+                }
+
+                html += `</div>`;
+
+            }
+
+            document.getElementById('imagesdiv').innerHTML = html;
+            initClicks2();
+            let image_menu = document.getElementsByName('image_menu');
+            let namemenu = document.getElementsByName('namemenu');
+            restartAll1();
+            for (let i = 0; i < image_menu.length; i++) {
+                image_menu[i].addEventListener('mouseover', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.hoverSrc;
+
+                });
+
+                image_menu[i].addEventListener('mouseout', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.defaultSrc;
+                });
+                image_menu[i].addEventListener('click', (event) => {
+                    if (namemenu[i].style.display === 'none') {
+                        restartAll1();
+                        namemenu[i].style.display = 'flex';
+                    }
+                    else {
+                        namemenu[i].style.display = 'none';
+                    }
+                });
+            }
+
+
+
+        }
+
+        function printFavorites() {
+            let html = '';
+            let date1 = window.date1
+            let datey1 = window.datey1
+            let isAddDate = false;
+
+
+            for (let i = 0; i < window.rows1.length; i++) {
+
+
+                let row = window.rows1[i];
+                for (let i = 0; i < row.length; i++) {
+                    image = row[i];
+                    if (image['isNewDate']) {
+                        isAddDate = false;
+                    }
+
+                    if (!isAddDate && image['image']['isFavorite']) {
+                        isAddDate = true;
+                        html += '<div style="width: fit-content;height: fit-content;margin: 10px;">';
+                        if (image.image.date == date1) {
+
+                            html += `<p style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;">היום</p>`;
+
+                        }
+                        else if (image.image.date == datey1) {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 30px;margin: -5px;margin-left: 10px;`
+                            if (hasTodayImg) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">
+                    אתמול</p>`;
+                        }
+                        else {
+                            html += `<p
+                    style="font-family: cursive;width: fit-content;height: fit-content;font-size: 20px;margin: -5px;margin-left: 10px;`;
+                            if (hasYesterdayImgOrToday) {
+                                html += `margin-top: 100px;`;
+                            }
+                            html += `">` +
+                                image.image.sdate
+                                + `</p>`;
+                        }
+
+                        html += '  </div >';
+                    }
+                }
+
+                html += `<div style="width: 100%; height: fit-content; display: flex; flex-direction: row;">`;
+
+                for (let j = 0; j < row.length; j++) {
+                    let isShared = row[j]['isShared']
+                    let item = row[j];
+                    let imageUrl = item.image.image_url;
+                    let imageName = item.image.image_name;
+                    let type = item.type;
+                    let isVideo = item.isVideo;
+                    if (!row[j]['image']['isFavorite']) {
+                        continue;
+                    }
+
+                    html += `
+<div style="position: relative; margin: 10px;">
+<div style="position: absolute; right: 0; top: 0; z-index: 3;">
+<img src="/static/images/menu31.png"
+     style="position: relative; width: 30px; height: auto; z-index: 200;"
+name="image_menu"
+data-default-src="/static/images/menu31.png"
+data-hover-src="/static/images/gray_menu.png"
+onclick="click_menu()"
+onmouseover="this.src=this.getAttribute('data-hover-src')"
+onmouseout="this.src=this.getAttribute('data-default-src')" />
+</div>
+<div style="position: relative; z-index: 1;">`;
+
+                    if (!isVideo) {
+                        html += `
+<img src="${imageUrl}" alt="image"
+     style="width: 100px; height: auto; margin: 10px;"
+     onclick="clickImage('${imageUrl}')">`;
+                    } else {
+                        html += `
+<video width="200" style="margin: 10px;" controls
+       onclick="clickVideo('${imageUrl}', '${type}')">
+    <source src="${imageUrl}" type="video/${type}">
+    הדפדפן שלך לא תומך בווידאו
+</video>`;
+                    }
+
+                    html += `
+</div>
+<div style="width: 100px; height: 200px; display: flex; flex-direction: column; position: absolute; top: 50px; right: -70px; z-index: 300;" name="namemenu">
+<div id="menu1">
+    <div class="z1" style="border-top-left-radius: 30px; border-top-right-radius: 30px;"><p>שיתוף</p></div>
+    <div class="z1" style="display: none;"><p>הורדה</p></div>
+${!isVideo ? `<div class="z1" onclick="clickImage('${imageUrl}')"><p>מבט</p></div>` : ''}
+    <div class="z1"><p>הוספה למועדפים</p></div>
+    <div class="z1" style="border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; display: flex; justify-content: center; align-items: center;"><p>מחיקה</p></div>
+</div>
+</div>
+</div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            document.getElementById('imagesdiv').innerHTML = html;
+            initClicks2();
+            let image_menu = document.getElementsByName('image_menu');
+            let namemenu = document.getElementsByName('namemenu');
+            restartAll1();
+            for (let i = 0; i < image_menu.length; i++) {
+                image_menu[i].addEventListener('mouseover', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.hoverSrc;
+
+                });
+
+                image_menu[i].addEventListener('mouseout', (event) => {
+                    image_menu[i].src = image_menu[i].dataset.defaultSrc;
+                });
+                image_menu[i].addEventListener('click', (event) => {
+                    if (namemenu[i].style.display === 'none') {
+                        restartAll1();
+                        namemenu[i].style.display = 'flex';
+                    }
+                    else {
+                        namemenu[i].style.display = 'none';
+                    }
+                });
+            }
+
+
+
+        }
+    </script>
+
+</body>
+
+</html>
