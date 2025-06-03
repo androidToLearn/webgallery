@@ -112,18 +112,15 @@ def index1(request):
             keepi += 1
 
             print('------------------------')
-            if keepi < len(images):
-                print(images[keepi].date)
-            if keepi + 1 < len(images):
-                print(images[keepi + 1].date)
             if keepi + 1 < len(images) and images[keepi].date != images[keepi + 1].date:
                 print('inside')
                 print('----------------------')
                 # כל פריט עם date אחר אחריו
-                row.append({'image': helpVies.toJson(images[keepi]), 'isVideo': images[keepi].image.name.lower(
-                ).endswith(video_extensions), 'type': returnType(images[keepi].image.name.lower(), video_extensions),
-                    'isShared': isFirstNameIsNotMe(images[keepi]), 'time_shared': findImageByImage(Date.objects.all(), images[keepi]), 'isNewDate': isStart})
-                isStart = False
+                if not isInserted:
+                    row.append({'image': helpVies.toJson(images[keepi]), 'isVideo': images[keepi].image.name.lower(
+                    ).endswith(video_extensions), 'type': returnType(images[keepi].image.name.lower(), video_extensions),
+                        'isShared': isFirstNameIsNotMe(images[keepi]), 'time_shared': findImageByImage(Date.objects.all(), images[keepi]), 'isNewDate': isStart})
+                    isStart = False
                 keepi += 1
                 indexInsert += 1
                 # סוף השורה הקודמת - שורה רגילה
@@ -137,22 +134,22 @@ def index1(request):
                 isStart = False
                 isTODoNewLine = 1
                 isInserted = True
+                # מוריד אחד כדי לבדוק את האחד הבא אם יש  דייט אחר אחריו
                 keepi -= 1
-
             elif not isInserted and keepi < len(images):
-                # האחרון וכל פריט אחר שאין date אחר אחריו
                 row.append({'image': helpVies.toJson(images[keepi]), 'isVideo': images[keepi].image.name.lower(
                 ).endswith(video_extensions), 'type': returnType(images[keepi].image.name.lower(), video_extensions),
                     'isShared': isFirstNameIsNotMe(images[keepi]), 'time_shared': findImageByImage(Date.objects.all(), images[keepi]), 'isNewDate': isStart})
                 isStart = False
                 isTODoNewLine += 1
+            elif isInserted:
+                isInserted = False
             if isTODoNewLine == 5:
                 # סוף  5 פריטים
                 indexInsert += 1
                 rows.insert(indexInsert, row)
                 row = []
                 isTODoNewLine = 0
-            isInserted = False
         if len(row) > 0:
             # בסוף זה עושה את של היום
             indexInsert += 1
@@ -171,6 +168,7 @@ def index1(request):
         # צריך שיהיה משהו בלי רווח מלמעלה בהתחלה יכול להיות today ויכול להיות yesterday
 
         return render(request, 'app/page1.html', {'form': formImage, 'rows': json.dumps(rows), 'rows_not_json': rows, 'user': user.name[0], 'color': user.color, 'usern': user.name, 'date': datetime.now().strftime('%d%m%Y'), 'datey': yesterday.strftime('%d%m%Y'), 'isHaveIdentify': json.dumps(noEmail), 'hasTodayImg': hasToday, 'hasYesterdayImgOrToday': (helpVies.isHasYesterdayImg(images) or hasToday), 'hasTodayImg1': json.dumps(hasToday), 'hasYesterdayImgOrToday1': json.dumps((helpVies.isHasYesterdayImg(images) or hasToday))})
+
 
 
 def findImageByImage(dates_shared, image):
